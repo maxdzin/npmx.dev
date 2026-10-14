@@ -107,6 +107,9 @@ function createPluralRule(locale: string, mapping: Record<string, number>) {
   }
 }
 
+const ukThreeFormRule = createPluralRule('uk-UA', { one: 0, few: 1, many: 2, other: 2 })
+const ukFourFormRule = createPluralRule('uk-UA', { one: 1, few: 2, many: 3, other: 3 })
+
 const locales: (LocaleObjectData | (Omit<LocaleObjectData, 'code'> & { code: string }))[] = [
   {
     code: 'en',
@@ -260,14 +263,8 @@ const locales: (LocaleObjectData | (Omit<LocaleObjectData, 'code'> & { code: str
     pluralRule: (choice, choicesLength) => {
       if (choice === 0 && choicesLength === 4) return 0
 
-      const ukPluralRule = createPluralRule(
-        'uk-UA',
-        choicesLength < 4
-          ? { zero: 2, one: 0, two: 1, few: 1, many: 2, other: 2 }
-          : { one: 1, two: 2, few: 2, many: 3, other: 3 },
-      )
-
-      return ukPluralRule(choice, choicesLength)
+      const rule = choicesLength === 4 ? ukFourFormRule : ukThreeFormRule
+      return rule(choice, choicesLength)
     },
   },
   /*{
